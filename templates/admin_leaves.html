@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Leave Management</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Inter, Arial;
+  background: #f8fafc;
+}
+
+.wrapper {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background: #0f172a;
+  color: #fff;
+  padding: 24px;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px;
+  border-radius: 8px;
+  color: #cbd5f5;
+  text-decoration: none;
+  margin-bottom: 8px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: #1e293b;
+  color: #fff;
+}
+
+.content {
+  flex: 1;
+  padding: 32px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04),
+              0 8px 24px rgba(0,0,0,.06);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+  background: #f1f5f9;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+select, button {
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>HRMS</h2>
+    <a href="/admin/hrms">📊 Dashboard</a>
+    <a href="/admin/hrms/attendance">🕒 Attendance</a>
+    <a class="active" href="/admin/hrms/leaves">📝 Leave Requests</a>
+    <a href="#">💰 Salary Settings</a>
+    <a href="#">📐 Salary Calculation</a>
+    <a href="#">⚠ Worker Concerns</a>
+  </aside>
+<!-- CONTENT -->
+<main class="content">
+
+  <div class="card">
+    <h3>Leave Requests</h3>
+
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background:#f1f5f9;">
+          <th>Worker</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for l in leaves %}
+        <tr>
+          <td>{{ l.username }}</td>
+          <td>{{ l.from_date }}</td>
+          <td>{{ l.to_date }}</td>
+          <td>{{ l.reason }}</td>
+          <td>
+            {% if l.status == 'Approved' %}
+              <span style="color:green; font-weight:600;">Approved</span>
+            {% elif l.status == 'Rejected' %}
+              <span style="color:red; font-weight:600;">Rejected</span>
+            {% else %}
+              <span style="color:orange; font-weight:600;">Pending</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if l.status == 'Pending' %}
+            <form method="post" style="display:flex; gap:6px;">
+              <input type="hidden" name="leave_id" value="{{ l.id }}">
+              <button type="submit" name="status" value="Approved">
+                ✅ Approve
+              </button>
+              <button type="submit" name="status" value="Rejected">
+                ❌ Reject
+              </button>
+            </form>
+            {% else %}
+              —
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" style="text-align:center; padding:15px;">
+            No leave requests found
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+</div>
+
+</body>
+</html>

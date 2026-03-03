@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+.card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+button {
+  padding: 8px 12px;
+  background: #0f766e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.status-pending { color: #d97706; font-weight: bold; }
+.status-replied { color: #16a34a; font-weight: bold; }
+</style>
+
+<div class="card">
+  <h2>HR / Worker Messages</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Worker</th>
+        <th>Subject</th>
+        <th>Message</th>
+        <th>Attachment</th>
+        <th>Status</th>
+        <th>Reply</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for m in messages %}
+      <tr>
+        <td>{{ m.username }}</td>
+        <td>{{ m.subject }}</td>
+        <td>{{ m.message }}</td>
+
+        <td>
+          {% if m.attachment %}
+            <a href="/uploads/hr/{{ m.attachment }}" target="_blank">View</a>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+
+        <td>
+          {% if m.status == 'Pending' %}
+            <span class="status-pending">Pending</span>
+          {% else %}
+            <span class="status-replied">Replied</span>
+          {% endif %}
+        </td>
+
+        <td>
+          {% if m.status == 'Pending' %}
+          <form method="post">
+            <input type="hidden" name="msg_id" value="{{ m.id }}">
+            <textarea name="reply" rows="3" required></textarea>
+            <button type="submit">Send Reply</button>
+          </form>
+          {% else %}
+            {{ m.reply }}
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" style="text-align:center;">
+          No messages found
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

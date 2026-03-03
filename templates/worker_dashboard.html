@@ -1,0 +1,201 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  overflow: hidden;
+}
+
+/* ===== LAYOUT ===== */
+.app-shell {
+  display: flex;
+  height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 240px;
+  background: #0f766e;
+  color: #fff;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar .logo {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin-bottom: 12px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: #e6fffa;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.sidebar a:hover,
+.sidebar .active a {
+  background: #14b8a6;
+  color: #003b36;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  width: calc(100vw - 240px);
+}
+
+
+/* ===== HEADER ===== */
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: 26px;
+}
+
+.page-header p {
+  color: #6b7280;
+}
+
+/* ===== STATS ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.stat-card h2 {
+  font-size: 28px;
+  color: #0f766e;
+}
+
+.stat-card p {
+  margin-top: 6px;
+  color: #6b7280;
+}
+
+/* ===== TABLE CARDS ===== */
+.table-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 0;
+  width: 100%;
+  margin: 0;
+}
+
+.table-card h3 {
+  margin-bottom: 14px;
+}
+
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  min-width: 100%;
+}
+
+
+thead {
+  background: #f0fdfa;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  text-align: left;
+}
+
+th {
+  font-weight: 600;
+  color: #065f46;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+</style>
+
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2 class="logo">Niva Health Kare</h2>
+    <ul>
+      <li class="active"><a href="{{ url_for('worker_dashboard') }}">📊 Dashboard</a></li>
+      <li><a href="{{ url_for('worker_tasks') }}">✅ Today Tasks</a></li>
+      <li><a href="{{ url_for('worker_leads') }}">🧾 Web Leads</a></li>
+      <li><a href="{{ url_for('worker_appointments') }}">📅 Appointments</a></li>
+      <li><a href="{{ url_for('worker_hrms') }}">🧑‍💼 HRMS</a></li>
+      <li><a href="{{ url_for('logout') }}">🚪 Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>Worker Dashboard</h1>
+      <p>Welcome, {{ user.name }}</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h2>{{ stats.total_leads }}</h2>
+        <p>Total Web Leads</p>
+      </div>
+      <div class="stat-card">
+        <h2>{{ stats.today_appointments }}</h2>
+        <p>Today Appointments</p>
+      </div>
+      <div class="stat-card">
+        <h2>{{ stats.pending_tasks }}</h2>
+        <p>Pending Tasks</p>
+      </div>
+      <div class="stat-card">
+        <h2>{{ stats.bills_today }}</h2>
+        <p>Bills Generated</p>
+      </div>
+    </div>
+
+
+
+
+  </main>
+</div>
+
+{% endblock %}

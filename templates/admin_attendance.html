@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Attendance</title>
+
+<style>
+:root {
+  --primary: #2563eb;
+  --bg: #f8fafc;
+  --dark: #0f172a;
+  --border: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Inter, Arial;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 240px;
+  background: var(--dark);
+  color: #fff;
+  padding: 24px;
+}
+
+.sidebar h2 {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: #cbd5f5;
+  text-decoration: none;
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: #1e293b;
+  color: #fff;
+}
+
+/* ===== CONTENT ===== */
+.content {
+  flex: 1;
+  padding: 32px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.05);
+}
+
+/* ===== FILTER ===== */
+.filters {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr auto auto;
+  gap: 16px;
+  align-items: end;
+}
+
+label {
+  font-size: 12px;
+  color: #475569;
+}
+
+select, input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+/* ===== BUTTON ===== */
+.btn {
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn.gray {
+  background: #64748b;
+}
+
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  background: #f1f5f9;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.status-present { color: green; font-weight: 600; }
+.status-late { color: orange; font-weight: 600; }
+.status-absent { color: red; font-weight: 600; }
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>HRMS</h2>
+    <a href="/admin/hrms">Dashboard</a>
+    <a class="active" href="/admin/hrms/attendance">Attendance</a>
+    <a href="#">Leave</a>
+    <a href="#">Salary</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- FILTER -->
+    <div class="card">
+      <h3>Attendance Filter</h3>
+
+      <form method="GET" class="filters">
+        <div>
+          <label>Worker</label>
+          <select name="worker_id">
+            <option value="">All</option>
+            {% for worker in workers %}
+            <option value="{{ worker.id }}">{{ worker.username }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label>From</label>
+          <input type="date" name="from_date">
+        </div>
+
+        <div>
+          <label>To</label>
+          <input type="date" name="to_date">
+        </div>
+
+        <button class="btn">Search</button>
+        <a href="/admin/hrms/attendance/export" class="btn gray">Download Excel</a>
+      </form>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card">
+      <h3>Attendance Records</h3>
+
+      <table>
+        <tr>
+          <th>Worker</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+          <th>Update</th>
+        </tr>
+
+        {% for r in records %}
+        <tr>
+          <td>{{ r.username }}</td>
+          <td>{{ r.date }}</td>
+          <td>{{ r.time }}</td>
+
+          <td class="
+            {% if r.status=='Present' %}status-present
+            {% elif r.status=='Late' %}status-late
+            {% else %}status-absent{% endif %}
+          ">
+            {{ r.status }}
+          </td>
+
+          <td>
+            <form method="POST" action="/admin/hrms/attendance/update">
+              <input type="hidden" name="attendance_id" value="{{ r.id }}">
+              <select name="status">
+                <option {% if r.status=='Present' %}selected{% endif %}>Present</option>
+                <option {% if r.status=='Late' %}selected{% endif %}>Late</option>
+                <option {% if r.status=='Absent' %}selected{% endif %}>Absent</option>
+              </select>
+              <button class="btn gray">Update</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>

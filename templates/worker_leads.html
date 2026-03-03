@@ -1,0 +1,443 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  overflow: hidden;
+}
+
+/* ===== LAYOUT ===== */
+.app-shell {
+  display: flex;
+  height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 240px;
+  background: #0f766e;
+  color: #fff;
+  padding: 20px 16px;
+  overflow-y: auto;
+}
+
+.sidebar .logo {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin-bottom: 8px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 10px 12px;
+  text-decoration: none;
+  color: #e6fffa;
+  border-radius: 4px; /* minimal */
+}
+
+.sidebar a:hover,
+.sidebar .active a {
+  background: #14b8a6;
+  color: #003b36;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  width: calc(100vw - 240px);
+}
+
+
+/* ===== HEADER ===== */
+.page-header {
+  margin-bottom: 14px;
+}
+
+.page-header h1 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.page-header p {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* ===== TABLE WRAPPER ===== */
+.table-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  overflow-x: auto;
+}
+
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  min-width: 100%;
+}
+
+
+thead {
+  background: #f0fdfa;
+}
+
+th, td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  font-weight: 600;
+  color: #065f46;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.dashboard-table th {
+  background: #f4f6f8;
+  text-align: left;
+  padding: 14px;
+  font-weight: 600;
+  color: #444;
+  white-space: nowrap;
+}
+
+.dashboard-table td {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.dashboard-table tr:hover {
+  background: #fafafa;
+}
+
+.bold {
+  font-weight: 600;
+}
+/* ===== STATUS ===== */
+.status {
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.status.new {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.followup {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.closed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.message {
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status Badges */
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  display: inline-block;
+}
+
+.status.new {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.status.completed {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status.pending {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+/* Payment */
+.payment {
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.payment.pending {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.payment.paid {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.empty {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+}
+
+/* ===== MODAL STYLING ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(3px);
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: #fff;
+    width: 420px;
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    animation: popup 0.25s ease;
+}
+
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 20px;
+    font-size: 14px;
+}
+
+.modal-body p {
+    margin-bottom: 12px;
+}
+
+@keyframes popup {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ===== CLEAN ACTION BUTTON ===== */
+.action-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 4px;
+    border: 1px solid #0f766e;
+    background-color: #0f766e;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.action-btn:focus {
+    outline: none;
+}
+</style>
+
+
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2 class="logo">Niva Health Kare</h2>
+    <ul>
+      <li class="active"><a href="{{ url_for('worker_dashboard') }}">📊 Dashboard</a></li>
+      <li><a href="{{ url_for('worker_tasks') }}">✅ Today Tasks</a></li>
+      <li><a href="{{ url_for('worker_leads') }}">🧾 Web Leads</a></li>
+      <li><a href="{{ url_for('worker_appointments') }}">📅 Appointments</a></li>
+      <li><a href="{{ url_for('logout') }}">🚪 Logout</a></li>
+    </ul>
+  </aside>
+<!-- Main Content -->
+<main class="main-content">
+
+  <div class="page-header">
+    <h1>Web Leads</h1>
+    <p>View all assigned web leads</p>
+  </div>
+
+  <div class="table-card">
+    <table class="dashboard-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Mobile No</th>
+          <th>Service</th>
+          <th>Location</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for lead in leads %}
+          <tr>
+            <td class="bold">{{ lead.name }}</td>
+            <td>{{ lead.mobile }}</td>
+            <td>{{ lead.service }}</td>
+            <td>{{ lead.address or "—" }}</td>
+
+            <td>
+              <span class="payment {{ lead.payment_type|lower }}">
+                {{ lead.payment_type }}
+              </span>
+            </td>
+
+            <td>
+              <span class="status {{ lead.status|lower }}">
+                {{ lead.status }}
+              </span>
+            </td>
+
+            <td>
+              <button 
+                  type="button"
+                  class="action-btn view-btn"
+                  data-id="{{ lead.id }}">
+                  View
+              </button>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="7" class="empty">No leads available</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+<div id="leadModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Lead Details</h3>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+
+        <div class="modal-body">
+            <p><b>Name:</b> <span id="m_name"></span></p>
+            <p><b>Email:</b> <span id="m_email"></span></p>
+            <p><b>Message:</b> <span id="m_message"></span></p>
+            <p><b>Payment ID:</b> <span id="m_payment_id"></span></p>
+        </div>
+    </div>
+</div>
+
+
+</main>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".view-btn").forEach(function(button) {
+        button.addEventListener("click", function() {
+
+            const id = this.getAttribute("data-id");
+            const url = "/lead-details/" + id;
+
+            fetch(url, {
+                method: "GET",
+                credentials: "include"   // 🔥 important for login session
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Server returned " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                document.getElementById('m_name').innerText = data.name || "N/A";
+                document.getElementById('m_email').innerText = data.email || "N/A";
+                document.getElementById('m_message').innerText = data.message || "N/A";
+                document.getElementById('m_payment_id').innerText = data.payment_id || "N/A";
+
+                document.getElementById('leadModal').style.display = "flex";
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Unable to load lead details. Please check login or route.");
+            });
+
+        });
+    });
+
+});
+
+function closeModal() {
+    document.getElementById('leadModal').style.display = "none";
+}
+</script>
+</div>
+
+{% endblock %}

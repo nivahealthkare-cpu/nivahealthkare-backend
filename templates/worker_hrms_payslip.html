@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+.hrms-wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+
+.hrms-sidebar {
+  width: 240px;
+  background: #0f172a;
+  color: #fff;
+  padding: 20px;
+}
+
+.hrms-sidebar h2 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.hrms-sidebar a {
+  display: block;
+  padding: 12px;
+  margin-bottom: 10px;
+  color: #e5e7eb;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.hrms-sidebar a:hover {
+  background: #1e293b;
+}
+
+.hrms-content {
+  flex: 1;
+  background: #ffffff;
+  padding: 30px;
+}
+
+.payslip-box {
+  max-width: 480px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 25px;
+  border-radius: 10px;
+}
+
+.payslip-box label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.payslip-box select,
+.payslip-box input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.payslip-box button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  background: #0f766e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
+
+<div class="hrms-wrapper">
+
+  <!-- LEFT MENU -->
+  <aside class="hrms-sidebar">
+    <h2>HRMS</h2>
+    <a href="{{ url_for('worker_attendance') }}">🕒 Attendance</a>
+    <a href="{{ url_for('worker_leave') }}">📝 Apply Leave</a>
+    <a href="{{ url_for('worker_payslip') }}">💰 Payslip</a>
+    <a href="{{ url_for('worker_hr_contact') }}">📩 Contact HR</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="hrms-content">
+    <h1>Download Payslip</h1>
+    <p>Select month to download your payslip.</p>
+
+    {% if message %}
+      <p><strong>{{ message }}</strong></p>
+    {% endif %}
+
+    <div class="payslip-box">
+      <form method="post">
+
+        <label>Worker ID</label>
+        <select name="worker_id">
+          <option value="{{ user.id }}">{{ user.name }} (ID: {{ user.id }})</option>
+        </select>
+
+        <label>Month</label>
+        <select name="month" required>
+          {% for m in months %}
+            <option value="{{ m }}">{{ m }}</option>
+          {% endfor %}
+        </select>
+
+        <button type="submit">Download Payslip</button>
+
+      </form>
+    </div>
+  </main>
+
+</div>
+
+{% endblock %}

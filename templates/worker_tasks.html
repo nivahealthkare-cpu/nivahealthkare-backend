@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+/* ===== HEADER ===== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* ===== TABLE CARD ===== */
+.table-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f0fdfa;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  text-align: left;
+}
+
+th {
+  font-weight: 600;
+  color: #065f46;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* ===== STATUS ===== */
+.status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* ===== ACTION BUTTON ===== */
+.btn-done {
+  background: #0f766e;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-done:hover {
+  background: #115e59;
+}
+
+.done-text {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+/* ===== EMPTY ===== */
+.empty {
+  text-align: center;
+  padding: 30px;
+  color: #6b7280;
+}
+</style>
+
+<div class="main-content">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Today's Tasks</h1>
+  </div>
+
+  <!-- Tasks Table -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for task in tasks %}
+        <tr>
+          <td><strong>{{ task.title }}</strong></td>
+          <td>{{ task.description }}</td>
+          <td>
+            <span class="status {{ task.status|lower }}">
+              {{ task.status }}
+            </span>
+          </td>
+          <td>
+            {% if task.status != 'Completed' %}
+            <form method="POST">
+              <input type="hidden" name="task_id" value="{{ task.id }}">
+              <button class="btn-done">Mark Done</button>
+            </form>
+            {% else %}
+            <span class="done-text">✔ Completed</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" class="empty">No tasks for today 🎉</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+{% endblock %}

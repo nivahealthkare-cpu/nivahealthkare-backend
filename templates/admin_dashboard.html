@@ -1,0 +1,190 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<style>
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background: #f4f6f9;
+}
+
+/* ===== LAYOUT ===== */
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* ===== HEADER ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 26px;
+}
+
+.header span {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* ===== STATS ===== */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  font-weight: 600;
+}
+
+/* ===== QUICK ACTIONS ===== */
+.actions {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.actions h2 {
+  margin-bottom: 16px;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.btn {
+  padding: 14px;
+  background: #f9fafb;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn:hover {
+  background: #0f766e;
+  color: #fff;
+}
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+
+</style>
+
+<div class="admin-shell">
+
+<body>
+  <div class="admin-layout">
+<!-- COMMON SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">Niva Admin</div>
+
+  <ul>
+    <li class="{% if active_page == 'dashboard' %}active{% endif %}">
+      <a href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a>
+    </li>
+
+    <li class="{% if active_page == 'leads' %}active{% endif %}">
+      <a href="{{ url_for('admin_leads') }}">🧾 Web Leads</a>
+    </li>
+
+    <li class="{% if active_page == 'appointments' %}active{% endif %}">
+      <a href="#">📅 Appointments</a>
+    </li>
+
+    <li class="{% if active_page == 'tasks' %}active{% endif %}">
+      <a href="{{ url_for('admin_tasks') }}">✅ Tasks</a>
+    </li>
+
+    <li class="{% if active_page == 'workers' %}active{% endif %}">
+      <a href="{{ url_for('admin_workers') }}">👥 Workers</a>
+    </li>
+
+
+    <li class="{% if active_page == 'hrms' %}active{% endif %}">
+      <a href="{{ url_for('admin_hrms') }}">🧑‍💼 HRMS</a>
+    </li>
+
+
+    <li>
+      <a href="{{ url_for('logout') }}">🚪 Logout</a>
+    </li>
+    <li>
+    <a href="{{ url_for('download_reports') }}">📥 Download Reports</a>
+
+    </li>
+
+
+  </ul>
+</aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+      <div class="header">
+        <h1>Dashboard</h1>
+        <span>Welcome, Admin</span>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats">
+        <div class="card">Total Web Leads</div>
+        <div class="card">Appointments</div>
+        <div class="card">Pending Payments</div>
+        <div class="card">Active Workers</div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+          <div class="btn">View Web Leads</div>
+          <div class="btn">Manage Appointments</div>
+          <div class="btn">Assign Tasks</div>
+          <div class="btn">Manage Workers</div>
+          <div class="btn">HRMS</div>
+          <div class="btn">Export Reports</div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+</body>
+
+
+  </main>
+</div>
+
+{% endblock %}

@@ -1,0 +1,193 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+.hrms-wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+
+.hrms-sidebar {
+  width: 240px;
+  background: #0f172a;
+  color: #fff;
+  padding: 20px;
+}
+
+.hrms-sidebar h2 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.hrms-sidebar a {
+  display: block;
+  padding: 12px;
+  margin-bottom: 10px;
+  color: #e5e7eb;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.hrms-sidebar a:hover {
+  background: #1e293b;
+}
+
+.hrms-content {
+  flex: 1;
+  background: #ffffff;
+  padding: 30px;
+}
+
+.leave-form {
+  max-width: 500px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 40px;
+}
+
+.leave-form label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.leave-form input,
+.leave-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.leave-form button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  background: #0f766e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.status-pending {
+  color: #d97706;
+  font-weight: bold;
+}
+
+.status-approved {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.status-rejected {
+  color: #dc2626;
+  font-weight: bold;
+}
+</style>
+
+<div class="hrms-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="hrms-sidebar">
+    <h2>HRMS</h2>
+    <a href="{{ url_for('worker_attendance') }}">🕒 Attendance</a>
+    <a href="{{ url_for('worker_leave') }}">📝 Apply Leave</a>
+    <a href="{{ url_for('worker_payslip') }}">💰 Payslip</a>
+    <a href="{{ url_for('worker_hr_contact') }}">📩 Contact HR</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="hrms-content">
+
+    <h1>Apply Leave</h1>
+    <p>Your leave request will be sent to Admin for approval.</p>
+
+    {% if message %}
+      <p><strong>{{ message }}</strong></p>
+    {% endif %}
+
+    <!-- APPLY LEAVE FORM -->
+    <div class="leave-form">
+      <form method="post">
+
+        <label>From Date</label>
+        <input type="date" name="from_date" required>
+
+        <label>To Date</label>
+        <input type="date" name="to_date" required>
+
+        <label>Subject</label>
+        <input type="text" name="subject" required>
+
+        <label>Reason</label>
+        <textarea name="reason" rows="4" required></textarea>
+
+        <button type="submit">Submit Leave Request</button>
+      </form>
+    </div>
+
+    <!-- LEAVE STATUS TABLE -->
+    <h2>Your Leave Requests</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>From</th>
+          <th>To</th>
+          <th>Subject</th>
+          <th>Reason</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for l in leaves %}
+        <tr>
+          <td>{{ l.from_date }}</td>
+          <td>{{ l.to_date }}</td>
+          <td>{{ l.subject }}</td>
+          <td>{{ l.reason }}</td>
+          <td>
+            {% if l.status == 'Approved' %}
+              <span class="status-approved">Approved</span>
+            {% elif l.status == 'Rejected' %}
+              <span class="status-rejected">Rejected</span>
+            {% else %}
+              <span class="status-pending">Pending</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" style="text-align:center;">
+            No leave requests found
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </main>
+
+</div>
+
+{% endblock %}

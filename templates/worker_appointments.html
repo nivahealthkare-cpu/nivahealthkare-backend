@@ -1,0 +1,306 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  overflow: hidden;
+}
+
+/* ===== APP LAYOUT ===== */
+.app-shell {
+  display: flex;
+  height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 240px;
+  background: #0f766e;
+  color: #fff;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar .logo {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: #e6fffa;
+  border-radius: 6px;
+}
+
+.sidebar a:hover,
+.sidebar .active a {
+  background: #14b8a6;
+  color: #003b36;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  width: calc(100vw - 240px);
+}
+
+
+/* ===== HEADER ===== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.page-header button {
+  background: #0f766e;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.page-header button:hover {
+  background: #115e59;
+}
+
+/* ===== ADD PATIENT FORM ===== */
+#addPatientForm {
+  display: none;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.add-patient-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.add-patient-form input,
+.add-patient-form select {
+  height: 36px;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  min-width: 150px;
+}
+
+.add-patient-form input:focus,
+.add-patient-form select:focus {
+  border-color: #0f766e;
+  outline: none;
+}
+
+.add-patient-form button {
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 6px;
+  background: #0f766e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-patient-form button:hover {
+  background: #115e59;
+}
+
+/* ===== TABLE ===== */
+.table-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 100%;
+}
+
+
+thead {
+  background: #f0fdfa;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  text-align: left;
+}
+
+th {
+  font-weight: 600;
+  color: #065f46;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* ===== STATUS TAGS ===== */
+.status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status.scheduled {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.pending {
+  background: #fee2e2;
+  color: #991b1b;
+}
+</style>
+
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2 class="logo">Niva Health Kare</h2>
+    <ul>
+      <li class="active"><a href="{{ url_for('worker_dashboard') }}">📊 Dashboard</a></li>
+      <li><a href="{{ url_for('worker_tasks') }}">✅ Today Tasks</a></li>
+      <li><a href="{{ url_for('worker_leads') }}">🧾 Web Leads</a></li>
+      <li><a href="{{ url_for('worker_appointments') }}">📅 Appointments</a></li>
+      <li><a href="{{ url_for('logout') }}">🚪 Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <div class="page-header">
+      <h1>Appointments</h1>
+      <button onclick="toggleForm()">+ Add Patient</button>
+    </div>
+
+    <!-- Add Patient Form -->
+    <div id="addPatientForm">
+      <form method="POST" class="add-patient-form">
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="text" name="mobile" placeholder="Mobile" required>
+        <input type="email" name="email" placeholder="Email">
+        <input type="text" name="service" placeholder="Service">
+        <input type="text" name="address" placeholder="Address">
+        <input type="text" name="message" placeholder="Message">
+
+        <select name="payment">
+          <option value="Pending">Pending</option>
+          <option value="Paid">Paid</option>
+        </select>
+
+        <select name="status">
+          <option value="Scheduled">Scheduled</option>
+          <option value="Completed">Completed</option>
+        </select>
+
+        <button type="submit">Save Patient</button>
+      </form>
+    </div>
+
+
+    <!-- Appointments Table -->
+<!-- Appointments Table -->
+    <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Mobile</th>
+          <th>Email</th>
+          <th>Service</th>
+          <th>Address</th>
+          <th>Payment</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for appt in appointments %}
+        <tr>
+          <td>{{ appt.name }}</td>
+          <td>{{ appt.mobile }}</td>
+          <td>{{ appt.email }}</td>
+          <td>{{ appt.service }}</td>
+          <td>{{ appt.address }}</td>
+          <td>{{ appt.payment }}</td>
+          <td>
+            <span class="status {{ appt.status|lower }}">
+              {{ appt.status }}
+            </span>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" style="text-align:center;">No appointments found</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+
+
+  </main>
+</div>
+
+<script>
+function toggleForm() {
+  const form = document.getElementById("addPatientForm");
+  form.style.display = (form.style.display === "none" || form.style.display === "")
+    ? "block"
+    : "none";
+}
+</script>
+
+{% endblock %}

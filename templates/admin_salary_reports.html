@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Salary Reports</title>
+<style>
+body{margin:0;font-family:Arial;background:#f8fafc;}
+.wrapper{display:flex;height:100vh;}
+.sidebar{width:260px;background:#0f172a;color:#fff;padding:24px;}
+.sidebar a{display:block;padding:12px;color:#cbd5f5;text-decoration:none;border-radius:8px;margin-bottom:8px;}
+.sidebar a.active,.sidebar a:hover{background:#1e293b;color:#fff;}
+.content{flex:1;padding:32px;}
+.card{background:#fff;padding:24px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.06);}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:12px;border-bottom:1px solid #e5e7eb;}
+th{background:#f1f5f9;font-size:12px;text-transform:uppercase;}
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+
+<aside class="sidebar">
+  <h2>HRMS</h2>
+  <a href="/admin/hrms">📊 Dashboard</a>
+  <a href="/admin/hrms/salary-payment">💳 Salary Payment</a>
+  <a class="active" href="/admin/hrms/salary-reports">📑 Salary Reports</a>
+</aside>
+
+<main class="content">
+<div class="card">
+<h3>Salary Payment Reports</h3>
+
+<table>
+<thead>
+<tr>
+<th>Worker</th>
+<th>Month</th>
+<th>Amount</th>
+<th>Paid On</th>
+<th>Remarks</th>
+</tr>
+</thead>
+<tbody>
+{% for r in reports %}
+<tr>
+<td>{{ r.username }}</td>
+<td>{{ r.month }}</td>
+<td>₹ {{ r.amount }}</td>
+<td>{{ r.paid_on }}</td>
+<td>{{ r.remarks }}</td>
+</tr>
+{% else %}
+<tr><td colspan="5" align="center">No payments found</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</main>
+
+</div>
+</body>
+</html>

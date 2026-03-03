@@ -1,0 +1,226 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ===== FULL PAGE WRAPPER ===== */
+.hrms-page {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: #f1f5f9;
+}
+
+/* ===== LEFT EDGE SIDEBAR ===== */
+.hrms-sidebar {
+  width: 240px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 20px;
+}
+
+/* Sidebar title */
+.hrms-sidebar h2 {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+/* Sidebar links */
+.hrms-sidebar a {
+  display: block;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  color: #e5e7eb;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.hrms-sidebar a:hover,
+.hrms-sidebar a.active {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+/* ===== RIGHT CONTENT AREA ===== */
+.hrms-content {
+  flex: 1;
+  background: #ffffff;
+  padding: 30px 40px;
+}
+
+/* Page title */
+.hrms-content h1 {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+/* Subtitle */
+.hrms-content p {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* ===== FORM CARD ===== */
+.form-card {
+  max-width: 650px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 25px;
+  border-radius: 10px;
+}
+
+/* Form fields */
+label {
+  display: block;
+  margin-top: 16px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+input[type="text"],
+textarea,
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* Submit button */
+button {
+  margin-top: 22px;
+  width: 100%;
+  padding: 14px;
+  background: #0f766e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #115e59;
+}
+
+/* Flash message */
+.alert {
+  background: #ecfeff;
+  border: 1px solid #67e8f9;
+  color: #155e75;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+</style>
+
+<div class="hrms-page">
+
+  <!-- LEFT EDGE SIDEBAR -->
+  <aside class="hrms-sidebar">
+    <h2>HRMS</h2>
+    <a href="{{ url_for('worker_attendance') }}">🕒 Attendance</a>
+    <a href="{{ url_for('worker_leave') }}">📝 Apply Leave</a>
+    <a href="{{ url_for('worker_payslip') }}">💰 Payslip</a>
+    <a href="{{ url_for('worker_hr_contact') }}" class="active">📩 Contact HR</a>
+  </aside>
+
+<!-- RIGHT CONTENT -->
+<section class="hrms-content">
+  <h1>Contact HR / Admin</h1>
+  <p>Raise any concern or request to HR with optional attachment.</p>
+
+  {% if message %}
+    <div class="alert">{{ message }}</div>
+  {% endif %}
+
+  <!-- SEND MESSAGE FORM -->
+  <div class="form-card">
+    <form method="post" enctype="multipart/form-data">
+
+      <label>Subject</label>
+      <input type="text" name="subject" placeholder="Enter subject" required>
+
+      <label>Message</label>
+      <textarea name="message" rows="6" placeholder="Describe your concern..." required></textarea>
+
+      <label>Attachment (optional)</label>
+      <input type="file" name="attachment">
+
+      <button type="submit">Send to HR</button>
+
+    </form>
+  </div>
+
+  <!-- WORKER MESSAGE STATUS -->
+  <h2 style="margin-top:40px;">Your Requests</h2>
+
+  <table style="width:100%; border-collapse:collapse; margin-top:12px;">
+    <thead>
+      <tr style="background:#f1f5f9;">
+        <th style="padding:10px; border:1px solid #e5e7eb;">Subject</th>
+        <th style="padding:10px; border:1px solid #e5e7eb;">Message</th>
+        <th style="padding:10px; border:1px solid #e5e7eb;">Status</th>
+        <th style="padding:10px; border:1px solid #e5e7eb;">HR Reply</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for m in messages %}
+      <tr>
+        <td style="padding:10px; border:1px solid #e5e7eb;">
+          {{ m.subject }}
+        </td>
+
+        <td style="padding:10px; border:1px solid #e5e7eb;">
+          {{ m.message }}
+        </td>
+
+        <td style="padding:10px; border:1px solid #e5e7eb;">
+          {% if m.status == 'Pending' %}
+            <span style="color:#d97706; font-weight:600;">Pending</span>
+          {% else %}
+            <span style="color:#16a34a; font-weight:600;">Replied</span>
+          {% endif %}
+        </td>
+
+        <td style="padding:10px; border:1px solid #e5e7eb;">
+          {% if m.reply %}
+            {{ m.reply }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4" style="padding:14px; text-align:center; color:#6b7280;">
+          No messages sent yet
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</section>
+
+
+</div>
+
+{% endblock %}

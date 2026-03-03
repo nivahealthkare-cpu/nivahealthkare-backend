@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+/* ===== FORCE FULL WIDTH (IMPORTANT) ===== */
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== HRMS MAIN WRAPPER ===== */
+.hrms-wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: #f3f4f6;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== LEFT SIDEBAR ===== */
+.hrms-sidebar {
+  width: 240px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 20px;
+  flex-shrink: 0;
+}
+
+.hrms-sidebar h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 20px;
+}
+
+.hrms-sidebar a {
+  display: block;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  color: #e5e7eb;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.hrms-sidebar a:hover {
+  background: #1e293b;
+}
+
+/* ===== RIGHT CONTENT ===== */
+.hrms-content {
+  flex: 1;
+  background: #ffffff;
+  padding: 30px;
+}
+
+/* ===== ATTENDANCE CARD ===== */
+.attendance-box {
+  max-width: 420px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 25px;
+  border-radius: 10px;
+}
+
+.attendance-box button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  background: #0f766e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.attendance-box button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.attendance-history-link {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 10px 16px;
+    background-color: #2563eb;   /* professional blue */
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.attendance-history-link:hover {
+    background-color: #1e40af;
+    transform: translateY(-1px);
+}
+
+.attendance-history-link:active {
+    transform: translateY(0);
+}
+
+</style>
+
+<div class="hrms-wrapper">
+
+  <!-- LEFT HRMS MENU (CORNER FIXED) -->
+  <aside class="hrms-sidebar">
+    <h2>HRMS</h2>
+    <a href="{{ url_for('worker_attendance') }}">🕒 Attendance</a>
+    <a href="{{ url_for('worker_leave') }}">📝 Apply Leave</a>
+    <a href="{{ url_for('worker_payslip') }}">💰 Payslip</a>
+    <a href="{{ url_for('worker_hr_contact') }}">📩 Contact HR</a>
+  </aside>
+
+
+
+
+  <!-- RIGHT CONTENT -->
+  <main class="hrms-content">
+    <h1>Mark Attendance</h1>
+    <p>Date & time will be recorded automatically.</p>
+
+    <div class="attendance-box">
+      {% if message %}
+        <p><strong>{{ message }}</strong></p>
+      {% endif %}
+
+      {% if can_mark %}
+        <form method="post">
+          <button type="submit">Mark Attendance</button>
+        </form>
+      {% else %}
+        <button disabled>Attendance Closed</button>
+      {% endif %}
+    </div>
+
+    <a href="/worker/hrms/attendance/history" class="attendance-history-link">
+        📅 My Attendance History
+    </a>
+
+  </main>
+
+</div>
+
+{% endblock %}

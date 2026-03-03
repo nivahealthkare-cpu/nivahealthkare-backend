@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Details</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f6fa;
+            padding: 30px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 500px;
+        }
+        h2 {
+            margin-bottom: 15px;
+        }
+        p {
+            margin: 6px 0;
+        }
+        .actions a {
+            display: inline-block;
+            margin-top: 15px;
+            margin-right: 10px;
+            padding: 10px 15px;
+            background: #2f80ed;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>{{ patient.name }}</h2>
+
+    <p><strong>Mobile:</strong> {{ patient.mobile }}</p>
+    <p><strong>Email:</strong> {{ patient.email }}</p>
+    <p><strong>Service:</strong> {{ patient.service }}</p>
+    <p><strong>Message:</strong> {{ patient.message }}</p>
+    <p><strong>Payment:</strong> {{ patient.payment }}</p>
+    <p><strong>Status:</strong> {{ patient.status }}</p>
+
+    <div class="actions">
+        <a href="#">Generate Report</a>
+        <a href="#">Generate Bill</a>
+    </div>
+</div>
+
+</body>
+</html>

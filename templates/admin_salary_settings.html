@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Salary Settings</title>
+
+<style>
+body { margin:0;font-family:Arial;background:#f8fafc; }
+.wrapper { display:flex;height:100vh; }
+.sidebar {
+  width:260px;background:#0f172a;color:#fff;padding:24px;
+}
+.sidebar a {
+  display:block;padding:12px;color:#cbd5f5;
+  text-decoration:none;border-radius:8px;margin-bottom:8px;
+}
+.sidebar a.active,.sidebar a:hover {
+  background:#1e293b;color:#fff;
+}
+.content { flex:1;padding:32px; }
+.card {
+  background:#fff;padding:24px;border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  margin-bottom:24px;
+}
+input, select {
+  padding:10px;border-radius:8px;border:1px solid #e5e7eb;
+}
+button {
+  background:#2563eb;color:#fff;border:none;
+  padding:10px 16px;border-radius:8px;cursor:pointer;
+}
+table { width:100%;border-collapse:collapse; }
+th,td { padding:12px;border-bottom:1px solid #e5e7eb; }
+th { background:#f1f5f9;font-size:12px;text-transform:uppercase; }
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>HRMS</h2>
+    <a href="/admin/hrms">📊 Dashboard</a>
+    <a href="/admin/hrms/attendance">🕒 Attendance</a>
+    <a href="/admin/hrms/leaves">📝 Leaves</a>
+    <a class="active" href="/admin/hrms/salary-settings">💰 Salary Settings</a>
+    <a href="#">📐 Salary Calculation</a>
+    <a href="#">⚠ Worker Concerns</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ADD / UPDATE -->
+    <div class="card">
+      <h3>Set Worker Salary</h3>
+
+      <form method="POST">
+        <select name="worker_id" required>
+          <option value="">Select Worker</option>
+          {% for w in workers %}
+          <option value="{{ w.id }}">{{ w.username }}</option>
+          {% endfor %}
+        </select>
+
+        <select name="salary_type" required>
+          <option value="daily">Daily</option>
+          <option value="monthly">Monthly</option>
+        </select>
+
+        <input type="number" name="amount" placeholder="Amount ₹" required>
+        <input type="number" name="working_days" placeholder="Working days" value="26">
+
+        <button>Save</button>
+      </form>
+    </div>
+
+    <!-- LIST -->
+    <div class="card">
+      <h3>Configured Salaries</h3>
+
+      <table>
+        <tr>
+          <th>Worker</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Working Days</th>
+        </tr>
+
+        {% for s in settings %}
+        <tr>
+          <td>{{ s.username }}</td>
+          <td>{{ s.salary_type }}</td>
+          <td>₹ {{ s.amount }}</td>
+          <td>{{ s.working_days }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

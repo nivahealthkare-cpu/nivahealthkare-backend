@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Payslips</title>
+<style>
+body{font-family:Arial;background:#f8fafc;padding:32px;}
+.card{background:#fff;padding:24px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.06);}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:12px;border-bottom:1px solid #e5e7eb;}
+th{background:#f1f5f9;font-size:12px;text-transform:uppercase;}
+</style>
+</head>
+
+<body>
+<div class="card">
+<h3>My Salary Payslips</h3>
+
+<table>
+<thead>
+<tr>
+<th>Month</th>
+<th>Amount</th>
+<th>Paid On</th>
+<th>Remarks</th>
+</tr>
+</thead>
+<tbody>
+{% for s in slips %}
+<tr>
+<td>{{ s.month }}</td>
+<td>₹ {{ s.amount }}</td>
+<td>{{ s.paid_on }}</td>
+<td>{{ s.remarks }}</td>
+</tr>
+{% else %}
+<tr><td colspan="4" align="center">No salary paid yet</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</body>
+</html>
