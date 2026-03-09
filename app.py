@@ -336,13 +336,21 @@ def worker_tasks():
 @app.route('/worker/hrms')
 def worker_hrms():
     return render_template('worker_hrms.html')
+
+
+from pytz import timezone
+
 @app.route('/worker/hrms/attendance', methods=['GET', 'POST'])
 @login_required
 def worker_attendance():
+
     if current_user.role != "worker":
         return redirect(url_for('login'))
 
-    now = datetime.now()
+    # Indian Time (IST)
+    ist = timezone("Asia/Kolkata")
+    now = datetime.now(ist)
+
     today = now.strftime("%Y-%m-%d")
     current_time = now.strftime("%H:%M:%S")
 
@@ -354,7 +362,7 @@ def worker_attendance():
     conn = get_db()
     cursor = conn.cursor()
 
-    # 1️⃣ Already marked check (HIGHEST PRIORITY)
+    # 1️⃣ Check if already marked today
     already_marked = cursor.execute("""
         SELECT id FROM worker_attendance
         WHERE worker_id=? AND date=?
@@ -365,27 +373,18 @@ def worker_attendance():
         message = "✅ Attendance already marked for today"
 
     else:
-        # 2️⃣ Admin open/close check
-        attendance_open = cursor.execute(
-            "SELECT is_open FROM attendance_control WHERE id=1"
-        ).fetchone()[0]
 
-        if attendance_open == 0:
-            can_mark = False
-            message = "❌ Attendance is closed by admin"
-
-        elif now.time() > late_limit:
-            can_mark = True
-            message = "⚠ You are late. Attendance will be marked as Late."
-
-
+        # 2️⃣ Show time message
+        if now.time() > late_limit:
+            message = f"⚠ You are late. Current time: {current_time}"
         else:
-            can_mark = True
-            message = None
+            message = f"✅ On time. Current time: {current_time}"
 
-    # 4️⃣ Mark attendance
+    # 3️⃣ Mark attendance
     if request.method == "POST" and can_mark:
+
         status = "Present"
+
         if now.time() > late_limit:
             status = "Late"
 
@@ -396,7 +395,8 @@ def worker_attendance():
         """, (current_user.id, today, current_time, status))
 
         conn.commit()
-        message = "✅ Attendance marked successfully"
+
+        message = f"✅ Attendance marked successfully at {current_time}"
         can_mark = False
 
     conn.close()
@@ -406,8 +406,6 @@ def worker_attendance():
         message=message,
         can_mark=can_mark
     )
-
-
 
 @app.route('/worker/hrms/attendance/history')
 @login_required
