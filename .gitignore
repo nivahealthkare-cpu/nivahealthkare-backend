@@ -1,0 +1,4 @@
+database.db
+*.db
+attendance_sheet.xlsx
+__pycache__/ 
